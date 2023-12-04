@@ -2,5 +2,3 @@ pandas
 streamlit
 plotly
 plotly.express
-numpy==1.21.2
-# Add other dependencies as needed
