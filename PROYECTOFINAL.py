@@ -1,4 +1,3 @@
-pip install plotly.express
 pip install plotly pandas # Add other dependencies as needed
 pip install streamlit
 
