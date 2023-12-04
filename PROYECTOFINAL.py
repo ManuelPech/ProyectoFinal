@@ -1,4 +1,5 @@
-bash setup.sh
+chmod +x setup.sh
+./setup.sh
 import streamlit as st
 import pandas as pd
 import plotly.express as px
