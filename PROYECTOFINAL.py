@@ -1,9 +1,3 @@
-pip install plotly
-pip install --upgrade streamlit
-pip install --upgrade plotly
-
-
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
