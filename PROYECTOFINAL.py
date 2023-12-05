@@ -1,9 +1,5 @@
 import pandas as pd
 import streamlit as st
-import requirements
-with st.spinner('Instalando dependencias...'):
-    requirements_file = 'requirements.txt'
-    st.requirements(RequirementsFile(requirements_file))
 from dash.dependencies import Input, Output
 import plotly.express as px
 # Cargar los datos
