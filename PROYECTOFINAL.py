@@ -1,7 +1,8 @@
-import pandas as pd
 import streamlit as st
-from dash.dependencies import Input, Output
+import pandas as pd
 import plotly.express as px
+from dash.dependencies import Input, Output
+
 # Cargar los datos
 archivo_excel = "datos/registrosventas.xlsx"
 datos_ventas = pd.read_excel(archivo_excel)
