@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-
 from dash.dependencies import Input, Output
 
 # Cargar los datos
