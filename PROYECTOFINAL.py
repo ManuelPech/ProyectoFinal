@@ -140,14 +140,19 @@ elif pagina_seleccionada == "🗺️ Mapa de Ventas":
 
 # Página de Comparación de Variables
 elif pagina_seleccionada == "🔄 Comparación de Variables":
-    # Título
+   # Título
     st.title("Comparación de Variables")
     st.subheader(" ")
-    st.write("Compara las variables clave, como las ventas y los costos, para cada país. Este análisis te permite identificar relaciones y patrones entre diferentes métricas de rendimiento.")
+    st.write(
+        "Compara las variables clave, como las ventas y los costos, para cada país. Este análisis te permite identificar relaciones y patrones entre diferentes métricas de rendimiento.")
     st.subheader(" ")
 
+    # Agrupar por país y sumar las ventas y costos
+    datos_agrupados = datos_filtrados.groupby('País').agg(
+        {'Importe venta total': 'sum', 'Importe Coste total': 'sum', 'Unidades': 'sum'}).reset_index()
+
     # Crear un gráfico de dispersión para comparar ventas y costos por país
-    fig_comparacion = px.scatter(datos_filtrados, x='Importe venta total', y='Importe Coste total',
+    fig_comparacion = px.scatter(datos_agrupados, x='Importe venta total', y='Importe Coste total',
                                  color='País', size='Unidades',
                                  title='Comparación de Ventas vs. Costos por País')
 
