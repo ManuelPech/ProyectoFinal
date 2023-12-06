@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from dash.dependencies import Input, Output
 
 # Cargar los datos
 archivo_excel = "datos/registrosventas.xlsx"
@@ -12,7 +13,7 @@ datos_ventas['Fecha pedido'] = pd.to_datetime(datos_ventas['Fecha pedido'])
 st.title("Bienvenido, este es el Dashboard del Análisis de Ventas")
 
 # Páginas dispoibles
-paginas = ["Resumen Ejecutivo", "Distribución de Ventas", "Tendencias Temporales", "Mapa de Ventas", "Comparación de Variables", "Productos Más Vendidos"]
+paginas = ["Bienvenida", "Resumen Ejecutivo", "Tendencias Temporales", "Mapa de Ventas", "Comparación de Variables", "Productos Más Vendidos"]
 
 # Seleccionar la página
 pagina_seleccionada = st.sidebar.selectbox("Selecciona una página", paginas)
@@ -31,8 +32,45 @@ fecha_fin = st.sidebar.date_input("Selecciona la fecha de fin:",
 datos_filtrados = datos_ventas[(datos_ventas['Fecha pedido'] >= pd.to_datetime(fecha_inicio)) &
                                (datos_ventas['Fecha pedido'] <= pd.to_datetime(fecha_fin))]
 
+
+# Página de Bienvenida
+if pagina_seleccionada == "Bienvenida":
+    st.subheader("¡Bienvenido al Dashboard de Análisis de Ventas!")
+
+    # Información destacada
+    st.write("""
+            Esta aplicación proporciona información detallada sobre las ventas, 
+            tendencias temporales, mapas de ventas, comparación de variables y productos más vendidos. 
+            Utiliza el menú lateral para navegar entre las diferentes secciones y ajusta las fechas para 
+            obtener información específica. ¡Explora y descubre insights valiosos!
+        """)
+
+    # Elementos interactivos
+    st.markdown("### ¿Cómo empezar?")
+    st.write("1. Utiliza el menú lateral para seleccionar la sección que deseas explorar.")
+    st.write("2. Ajusta las fechas para obtener información específica sobre el periodo de interés.")
+    st.write("3. ¡Explora y descubre insights valiosos en tus datos de ventas!")
+
+    # Ejemplo de Insight
+    st.markdown("### Ejemplo de Insight")
+    st.write("Descubre cómo han evolucionado las ventas a lo largo del tiempo y realiza comparaciones detalladas.")
+
+    # Enlace rápido a la sección de Tendencias Temporales
+    st.markdown("[Ir a Tendencias Temporales](#)")
+
+    # Elemento adicional
+    st.markdown("### Prueba esta característica")
+    if st.button("Haz clic aquí"):
+        st.success("¡Bien hecho! Has descubierto una característica oculta. Sigue explorando.")
+
+    # Testimonio ficticio
+    st.markdown("""
+            > "Esta aplicación ha cambiado la forma en que entendemos nuestras ventas. 
+            > Es fácil de usar y proporciona insights valiosos de manera rápida."
+        """)
+
 # menuuuuu
-if pagina_seleccionada == "Resumen Ejecutivo":
+elif pagina_seleccionada == "Resumen Ejecutivo":
     st.subheader("Resumen Ejecutivo")
 
     totali = datos_filtrados['Importe venta total'].sum()
@@ -48,11 +86,6 @@ if pagina_seleccionada == "Resumen Ejecutivo":
     resumen_df = pd.DataFrame(resumen_data)
     st.table(resumen_df)
 
-elif pagina_seleccionada == "Distribución de Ventas":
-    st.subheader("Distribución de Ventas")
-    fig_ventas_por_pais = px.bar(datos_filtrados, x='País', y='Importe venta total',
-                                 title='Ventas por País', labels={'Importe venta total': 'Ventas'})
-    st.plotly_chart(fig_ventas_por_pais)
 
 elif pagina_seleccionada == "Tendencias Temporales":
     # tendencia
@@ -65,25 +98,24 @@ elif pagina_seleccionada == "Tendencias Temporales":
         st.warning('El DataFrame no tiene las columnas necesarias para la visualización.')
 
 elif pagina_seleccionada == "Mapa de Ventas":
-    paises = datos_filtrados['País'].unique()
-    paisseleccionado = st.sidebar.selectbox("Selecciona un país:", paises)
-
-    # Filtrar d país seleccionado
-    datos_pais = datos_filtrados[datos_filtrados['País'] == paisseleccionado]
-
-    # Crear choropleth map
-    fig = px.choropleth(datos_pais,
+    # Crear choropleth map con color basado en el importe de venta total
+    fig = px.choropleth(datos_filtrados,
                         locations='País',
                         color='Importe venta total',
                         hover_name='País',
-                        title=f"Mapa de Ventas para {paisseleccionado}",
+                        title="Mapa de Ventas",
                         locationmode='country names',
-                        fitbounds="locations")
-    fitbounds = "locations"
+                        color_continuous_scale='viridis',  # Puedes cambiar 'viridis' por otra escala de color
+                        range_color=(datos_filtrados['Importe venta total'].min(),
+                                     datos_filtrados['Importe venta total'].max()),
+                        labels={'Importe venta total': 'Importe de Venta Total'},
+                        )
     st.plotly_chart(fig)
-#tabla
-    st.write(f"Información para {paisseleccionado}:")
-    st.write(datos_pais)
+
+    st.subheader("Distribución de Ventas")
+    fig_ventas_por_pais = px.bar(datos_filtrados, x='País', y='Importe venta total',
+                                 title='Ventas por País', labels={'Importe venta total': 'Ventas'})
+    st.plotly_chart(fig_ventas_por_pais)
 
 elif pagina_seleccionada == "Comparación de Variables":
     st.subheader("Comparación de Variables")
@@ -99,3 +131,4 @@ elif pagina_seleccionada == "Productos Más Vendidos":
     fig_pie_productos_mas_vendidos = px.pie(productos_mas_vendidos, values='Unidades', names='Tipo de producto',
                                             title='Productos Más Vendidos', labels={'Unidades': 'Cantidad Vendida'})
     st.plotly_chart(fig_pie_productos_mas_vendidos)
+
