@@ -113,19 +113,23 @@ elif pagina_seleccionada == "🗺️ Mapa de Ventas":
     # Título
     st.title("Mapa de ventas")
     st.subheader(" ")
-    st.write("Explora la distribución geográfica de las ventas mediante un mapa interactivo. Este mapa te proporciona una visión global del rendimiento de las ventas en diferentes regiones y países.")
+    st.write(
+        "Explora la distribución geográfica de las ventas mediante un mapa interactivo. Este mapa te proporciona una visión global del rendimiento de las ventas en diferentes regiones y países.")
     st.subheader(" ")
 
+    # Agrupar por país y sumar las ventas
+    datos_agrupados_mapa = datos_filtrados.groupby('País')['Importe venta total'].sum().reset_index()
+
     # Crear choropleth map con color basado en el importe de venta total
-    fig = px.choropleth(datos_filtrados,
+    fig = px.choropleth(datos_agrupados_mapa,
                         locations='País',
                         color='Importe venta total',
                         hover_name='País',
                         title="Mapa de Ventas",
                         locationmode='country names',
                         color_continuous_scale='viridis',
-                        range_color=(datos_filtrados['Importe venta total'].min(),
-                                     datos_filtrados['Importe venta total'].max()),
+                        range_color=(datos_agrupados_mapa['Importe venta total'].min(),
+                                     datos_agrupados_mapa['Importe venta total'].max()),
                         labels={'Importe venta total': 'Importe de Venta Total'},
                         )
 
@@ -134,13 +138,13 @@ elif pagina_seleccionada == "🗺️ Mapa de Ventas":
 
     # Subtítulo y gráfico de barras de distribución de ventas por país
     st.subheader("Distribución de Ventas")
-    fig_ventas_por_pais = px.bar(datos_filtrados, x='País', y='Importe venta total',
+    fig_ventas_por_pais = px.bar(datos_agrupados_mapa, x='País', y='Importe venta total',
                                  title='Ventas por País', labels={'Importe venta total': 'Ventas'})
     st.plotly_chart(fig_ventas_por_pais)
 
 # Página de Comparación de Variables
 elif pagina_seleccionada == "🔄 Comparación de Variables":
-   # Título
+    # Título
     st.title("Comparación de Variables")
     st.subheader(" ")
     st.write(
